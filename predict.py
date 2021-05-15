@@ -30,10 +30,10 @@ if __name__ == "__main__":
     scrip = input()
     #print(f"Scrip selected: {scrip}")
 
-    with open('./api_credential.json', 'r') as creds:
-        api_key = creds["API-KEY"]
+    with json.loads('./api_credentials.json') as creds:
+        api_key = creds["API_KEY"]
 
-    API = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NSE:{scrip}&apikey={api_key}&outputsize=full"
+    API = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NSE.{scrip}&outputsize=full&apikey={api_key}"
 
     data = requests.get(API)
     print(data.status_code)
