@@ -46,10 +46,11 @@ if __name__ == "__main__":
     print("\nPlease select one of the above scrips")
     scrip = input()
 
-    scrip_data = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={scrip}&outputsize=full&apikey={api_key}"
+    scrip_data_api = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={scrip}&outputsize=full&apikey={api_key}"
 
-    data = requests.get(scrip_data)
-    print(data.status_code)
+    scrip_data = requests.get(scrip_data_api)
+    print(f"\nSuccessfully retrieved Data for {scrip}!") if scrip_data.status_code == 200 else print("Did not get data")
+    scrip_data = json.loads(scrip_data.text)
 
-    print(f"Below is the data fetched for {scrip}\n")
-    print(data.text)
+    print(scrip_data.keys())
+    print(scrip_data["Meta Data"])
