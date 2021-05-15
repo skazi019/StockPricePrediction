@@ -3,7 +3,7 @@ import pandas_datareader as pdr
 
 print("\n")
 
-class scrip_predict:
+class scrip_analysis:
     def __init__(self, scrip):
         self.scrip = scrip
 
@@ -27,15 +27,28 @@ class scrip_predict:
 if __name__ == "__main__":
     
     print("Input the Stock Code you want to checkout!")
-    scrip = input()
+    symbol = input()
     #print(f"Scrip selected: {scrip}")
 
-    with json.loads('./api_credentials.json') as creds:
-        api_key = creds["API_KEY"]
+    with open('./api_credentials.json') as creds:
+        data = json.load(creds)
+        api_key = data["API_KEY"]
 
-    API = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=NSE.{scrip}&outputsize=full&apikey={api_key}"
+    symbol_search = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={api_key}"
+    symbols_available = json.loads(requests.get(symbol_search).text)
+    print("Symbols available are: ")
+    # print(symbols_available["bestMatches"])
 
-    data = requests.get(API)
+    for i in range(len(symbols_available["bestMatches"])):
+        data = symbols_available["bestMatches"][i]
+        print(" {0} | {1} | {2} | {3} ".format(data['1. symbol'],data['2. name'],data['3. type'],data['4. region']))
+    
+    print("\nPlease select one of the above scrips")
+    scrip = input()
+
+    scrip_data = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={scrip}&outputsize=full&apikey={api_key}"
+
+    data = requests.get(scrip_data)
     print(data.status_code)
 
     print(f"Below is the data fetched for {scrip}\n")
