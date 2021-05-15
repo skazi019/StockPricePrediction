@@ -5,3 +5,4 @@
 #### Stuff to do
 - Use OOPs concepts
 - Use Multithreading/Multiprocessing
+- Use tensorflow/pytorch or some equivalent and not keras
