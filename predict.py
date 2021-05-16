@@ -1,4 +1,5 @@
 import os, sys, datetime, json, requests
+import numpy as np, pandas as pd
 import pandas_datareader as pdr
 
 print("\n")
@@ -16,7 +17,11 @@ class scrip_analysis:
         
         scrip_data = json.loads(scrip_data_object.text)
         scrip_data = scrip_data["Time Series (Daily)"]
-        print(scrip_data)
+
+        scrip_df = pd.DataFrame.from_dict(scrip_data, orient="index")
+        scrip_df.columns = ["open", "high", "low", "close", "volumne"]
+        
+        print(scrip_df.head())
 
         return True
     
@@ -38,7 +43,9 @@ if __name__ == "__main__":
     
     print("Input the Stock Code you want to checkout!")
     symbol = input()
-    #print(f"Scrip selected: {scrip}")
+    while not symbol:
+        print("You did not provide a valid Stock Code. Please enter again.")
+        symbol = input()
 
     with open('./api_credentials.json') as creds:
         data = json.load(creds)
@@ -47,7 +54,6 @@ if __name__ == "__main__":
     symbol_search = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={api_key}"
     symbols_available = json.loads(requests.get(symbol_search).text)
     print("Symbols available are: ")
-    # print(symbols_available["bestMatches"])
 
     for i in range(len(symbols_available["bestMatches"])):
         data = symbols_available["bestMatches"][i]
