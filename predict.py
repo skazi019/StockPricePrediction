@@ -9,7 +9,6 @@ class scrip_analysis:
         self.scrip = scrip
 
     def get_data(self):
-
         scrip_data_api = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={scrip}&outputsize=full&apikey={api_key}"
 
         scrip_data_object = requests.get(scrip_data_api)
@@ -20,10 +19,12 @@ class scrip_analysis:
 
         scrip_df = pd.DataFrame.from_dict(scrip_data, orient="index")
         scrip_df.columns = ["open", "high", "low", "close", "volumne"]
-        
+        scrip_df.reset_index(inplace=True)
+        scrip_df.columns = ["date", "open", "high", "low", "close", "volumne"]
         print(scrip_df.head())
 
-        return True
+        return scrip_df
+        
     
     #def preprocess_data(self):
         # process the data for the lstm model
@@ -55,11 +56,19 @@ if __name__ == "__main__":
     symbols_available = json.loads(requests.get(symbol_search).text)
     print("Symbols available are: ")
 
+    scrip_checklist = []
     for i in range(len(symbols_available["bestMatches"])):
         data = symbols_available["bestMatches"][i]
+        scrip_checklist.append(data["1. symbol"])
         print(" {0} | {1} | {2} | {3} ".format(data['1. symbol'],data['2. name'],data['3. type'],data['4. region']))
     
     print("\nPlease select one of the above scrips")
     scrip = input()
+    while scrip:
+        if scrip not in scrip_checklist:
+            print("Please select a valid scrip from those listed above.")
+            scrip = input()
+        else:
+            break
 
-    scrip_analysis.get_data(scrip)
+    scrip_df = scrip_analysis.get_data(scrip)
