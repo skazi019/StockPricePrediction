@@ -26,15 +26,14 @@ class scrip_analysis:
         return scrip_df
         
     
-    #def preprocess_data(self):
-        # process the data for the lstm model
+    def preprocess_data(self):
+        return True
     
-    #def predict_scrip(self):
-        # run the model and precit on the data
+    def predict_scrip(self):
+        return True
     
-    #def results(self):
-        # Return results to the user in the form of a chart opening
-        # in a window
+    def results(self):
+        return True
     
 #class LSTM:
    # Build the LSTM model using tensorflow
@@ -64,6 +63,10 @@ if __name__ == "__main__":
     
     print("\nPlease select one of the above scrips")
     scrip = input()
+    while not scrip:
+        print("You did not select a scrip from the above list. Please select a scrip.")
+        scrip = input()
+
     while scrip:
         if scrip not in scrip_checklist:
             print("Please select a valid scrip from those listed above.")
