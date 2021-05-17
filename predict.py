@@ -1,5 +1,6 @@
 import os, sys, datetime, json, requests
 import numpy as np, pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 print("\n")
 
@@ -27,7 +28,29 @@ class scrip_analysis:
         return scrip_df
         
     
-    def preprocess_data(self):
+    def preprocess_data(self, scrip_df):
+
+        scrip_df = scrip_df.filter(['close'])
+        scrip_close_data = scrip_df.values
+        training_data_len = len(scrip_close_data) * 0.8
+
+        scaler = MinMaxScaler(feature_range=(0,1))
+        scaled_data = scaler.fit_transform(scrip_close_data)
+        print("-----------------------------------")
+        print(scaled_data)
+
+        train_data = scaled_data[0:training_data_len, :]
+        x_train = []
+        y_train = []
+
+        for i in range(60,len(train_data)):
+            x_train.append(train_data[i-60:i, 0])
+            y_train.append(train_data[i, 0])
+            if i <= 60:
+                print(x_train)
+                print(y_train)
+                print("------------------------------")
+
         return True
     
     def predict_scrip(self):
@@ -76,4 +99,6 @@ if __name__ == "__main__":
             break
 
     stock = scrip_analysis(scrip, api_key)
-    stock.get_data()
+    stock_data = stock.get_data()
+
+    stock.preprocess_data(stock_data)
