@@ -1,12 +1,13 @@
 import os, sys, datetime, json, requests
 import numpy as np, pandas as pd
-import pandas_datareader as pdr
 
 print("\n")
 
 class scrip_analysis:
-    def __init__(self, scrip):
+    ''' This class is used to get the data, process it, and feed into the LSTM '''
+    def __init__(self, scrip, api_key):
         self.scrip = scrip
+        self.api_key = api_key
 
     def get_data(self):
         scrip_data_api = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={scrip}&outputsize=full&apikey={api_key}"
@@ -74,4 +75,5 @@ if __name__ == "__main__":
         else:
             break
 
-    scrip_df = scrip_analysis.get_data(scrip)
+    stock = scrip_analysis(scrip, api_key)
+    stock.get_data()
